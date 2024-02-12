@@ -2,6 +2,9 @@
 #define GRAPH_H
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 
 #define  UNEXPLORED 0
 #define  EXPLORED 1

@@ -1,30 +1,10 @@
 
 #include "graphs.h"
 
-/**
-* get_vertex - get a vertex from the graph
-* @graph: pointer to graph type
-* @str: string value of the vertex
-*
-* Return: pointer to vertex or NULL
-*/
-vertex_t *get_vertex(graph_t *graph, const char *str)
-{
-	vertex_t *vertex_ptr;
 
-	vertex_ptr = graph->vertices;
-
-	while (vertex_ptr)
-	{
-		if (strcmp(vertex_ptr->content, str) == 0)
-		{
-			return (vertex_ptr);
-		}
-		vertex_ptr = vertex_ptr->next;
-	}
-
-	return (NULL);
-}
+vertex_t *get_vertex(graph_t *graph, const char *str);
+edge_t *create_edge(vertex_t *src_vertex,
+vertex_t *dest_vertex, edge_type_t type);
 
 /**
 * graph_add_edge - adds an edge between two vertices to the graph
@@ -73,6 +53,32 @@ int graph_add_edge(graph_t *graph, const char *src,
 	dest_vertex->nb_edges += 1;
 
 	return (1);
+}
+
+
+/**
+* get_vertex - get a vertex from the graph
+* @graph: pointer to graph type
+* @str: string value of the vertex
+*
+* Return: pointer to vertex or NULL
+*/
+vertex_t *get_vertex(graph_t *graph, const char *str)
+{
+	vertex_t *vertex_ptr;
+
+	vertex_ptr = graph->vertices;
+
+	while (vertex_ptr)
+	{
+		if (strcmp(vertex_ptr->content, str) == 0)
+		{
+			return (vertex_ptr);
+		}
+		vertex_ptr = vertex_ptr->next;
+	}
+
+	return (NULL);
 }
 
 /**
