@@ -17,7 +17,9 @@ vertex_t *graph_add_vertex(graph_t *graph, const char *str)
 		return (NULL);
 	}
 
-	vertex_t *vertex_ptr, *prev_vertex_ptr, *vertex;
+	vertex_t *vertex_ptr;
+	vertex_t *prev_vertex_ptr;
+	vertex_t *vertex;
 
 	vertex_ptr = graph->vertices;
 
