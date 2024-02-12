@@ -9,6 +9,11 @@ void graph_delete(graph_t *graph)
 	vertex_t *vertex_ptr, *temp_vertex;
 	edge_t *edge_ptr, *temp_edge;
 
+	if (graph == NULL)
+	{
+		return;
+	}
+
 	vertex_ptr = graph->vertices;
 
 	while (vertex_ptr)
