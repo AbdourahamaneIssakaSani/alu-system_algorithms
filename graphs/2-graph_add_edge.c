@@ -21,9 +21,9 @@ int graph_add_edge(graph_t *graph, const char *src,
 
 				const char *dest, edge_type_t type)
 {
-	vertex_t *src_vertex, *dest_vertex, *vertex_ptr;
+	vertex_t *src_vertex, *dest_vertex;
 
-	edge_t *edge, *prev_edge;
+	edge_t *edge;
 
 	if (graph == NULL || src == NULL || dest == NULL)
 	{
