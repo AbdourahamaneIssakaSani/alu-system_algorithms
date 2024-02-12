@@ -5,11 +5,11 @@
 vertex_t *create_vertex(const char *str);
 
 /**
-* graph_add_vertex - adds a vertex to the graph
-* @graph: pointer to graph type
-* @str: string value for new vertex
-* Return: pointer to vertex or null
-*/
+ * graph_add_vertex - adds a vertex to the graph
+ * @graph: pointer to graph type
+ * @str: string value for new vertex
+ * Return: pointer to vertex or null
+ */
 vertex_t *graph_add_vertex(graph_t *graph, const char *str)
 {
 	vertex_t *vertex_ptr, *prev_vertex_ptr, *vertex;
@@ -21,10 +21,10 @@ vertex_t *graph_add_vertex(graph_t *graph, const char *str)
 
 	vertex_ptr = graph->vertices;
 
-	/*Check if the vertex with the str already exists*/
+	/* Check if the vertex with the str already exists */
 	while (vertex_ptr)
 	{
-		if (strcmp(vertex_ptr->content, str))
+		if (strcmp(vertex_ptr->content, str) == 0)
 		{
 			return (NULL);
 		}
@@ -50,13 +50,11 @@ vertex_t *graph_add_vertex(graph_t *graph, const char *str)
 	return (vertex);
 }
 
-
-
 /**
-* create_vertex - create a new vertex
-* @str: string value for the new vertex
-* Return: a pointer to the new vertex
-*/
+ * create_vertex - create a new vertex
+ * @str: string value for the new vertex
+ * Return: a pointer to the new vertex
+ */
 vertex_t *create_vertex(const char *str)
 {
 	vertex_t *vertex = malloc(sizeof(vertex_t));
