@@ -41,15 +41,16 @@ vertex_t *graph_add_vertex(graph_t *graph, const char *str)
 		return (NULL);
 	}
 
-	vertex->index = prev_vertex_ptr->index + 1;
 
 	if (graph->nb_vertices == 0)
 	{
 		graph->vertices = vertex;
+		vertex->index = 0;
 	}
 	else
 	{
 		prev_vertex_ptr->next = vertex;
+		vertex->index = prev_vertex_ptr->index + 1;
 	}
 
 
