@@ -63,6 +63,7 @@ int backtrack(char **map, int rows, int cols, point_t const *target,
 	point->y = y;
 
 	queue_push_front(path, point);
+	printf("Checking coordinates [%d, %d]\n", x, y);
 
 	if (x == target->x && y == target->y)
 		return (1);
