@@ -1,5 +1,11 @@
 #include "pathfinding.h"
 
+
+int initialize_dijkstra(graph_t *graph,
+vertex_t const *start, vertex_t const *target,
+
+						queue_t *queue, size_t **dist, size_t **prev, char **visited);
+
 /**
 * dijkstra_graph - Dijkstra's algorithm
 * @graph: graph
