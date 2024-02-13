@@ -53,11 +53,13 @@ int backtrack(char **map, int rows, int cols, point_t const *target,
 		return (0);
 	}
 
-	if (x < 0 || x >= cols || y < 0 || y >= rows || map[y][x] == '1')
+	if (x < 0 || x >= cols || y < 0 || y >= rows || map[y][x] != '0')
 	{
 		free(point);
 		return (0);
 	}
+
+	map[y][x] = '1';
 
 	point->x = x;
 	point->y = y;
@@ -68,7 +70,6 @@ int backtrack(char **map, int rows, int cols, point_t const *target,
 	if (x == target->x && y == target->y)
 		return (1);
 
-	map[y][x] = '1';
 
 	if (backtrack(map, rows, cols, target, x + 1, y, path) ||
 		backtrack(map, rows, cols, target, x - 1, y, path) ||
