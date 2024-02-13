@@ -9,6 +9,10 @@ vertex_t const *start, vertex_t const *target,
 void update_distances(graph_t *graph, vertex_t *vertex, queue_t *queue,
 					size_t *dist, size_t *prev);
 
+queue_t *path(graph_t *graph, vertex_t const *start, vertex_t const *target,
+
+			size_t const *prev, size_t const *dist);
+
 
 /**
 * dijkstra_graph - Dijkstra's algorithm
@@ -120,4 +124,47 @@ void update_distances(graph_t *graph, vertex_t *vertex, queue_t *queue,
 				return;
 		}
 	}
+}
+
+/**
+* path - create a queue of vertices representing the path
+* @graph: graph
+* @start: start vertex
+* @target: target vertex
+* @prev: array of previous vertices
+* @dist: array of distances
+* Return: queue of vertices
+*/
+queue_t *path(graph_t *graph, vertex_t const *start, vertex_t const *target,
+
+			size_t const *prev, size_t const *dist)
+{
+	queue_t *queue = queue_create();
+	vertex_t *vertex;
+	size_t i;
+
+	if (!queue)
+		return (NULL);
+
+	for (i = target->index; i != (size_t)-1; i = prev[i])
+	{
+		vertex = graph->vertices;
+		while (vertex && vertex->index != i)
+			vertex = vertex->next;
+		if (!vertex)
+			goto cleanup;
+		if (!enqueue(queue, (void *)vertex))
+			goto cleanup;
+	}
+
+	if (peek(queue) != start)
+		goto cleanup;
+
+	return (queue);
+
+cleanup:
+	while (queue->front)
+		free(dequeue(queue));
+	free(queue);
+	return (NULL);
 }
