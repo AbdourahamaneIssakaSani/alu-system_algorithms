@@ -40,10 +40,11 @@ int backtrack(char **map, int rows, int cols, point_t const *target,
 
 			int x, int y, queue_t *path)
 {
+	point_t *point = malloc(sizeof(*point));
+
 	if (x < 0 || x >= cols || y < 0 || y >= rows || map[y][x] == '1')
 		return (0);
 
-	point_t *point = malloc(sizeof(*point));
 
 	if (!point)
 		return (0);
@@ -51,8 +52,7 @@ int backtrack(char **map, int rows, int cols, point_t const *target,
 	point->x = x;
 	point->y = y;
 
-	if (enqueue(path, point))
-		return (0);
+	queue_push_front(path, point);
 
 	if (x == target->x && y == target->y)
 		return (1);
@@ -65,7 +65,7 @@ int backtrack(char **map, int rows, int cols, point_t const *target,
 		backtrack(map, rows, cols, target, x, y - 1, path))
 		return (1);
 
-	free(dequeue(path));
+	free(queue_push_back(path, NULL));
 
 	return (0);
 }
