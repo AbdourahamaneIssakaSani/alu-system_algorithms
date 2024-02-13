@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define INT_MAX 2147483647
+
 /**
 * struct point_s - Structure storing coordinates
 *
