@@ -5,6 +5,7 @@
 #include "graphs.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #define INT_MAX 2147483647
 
