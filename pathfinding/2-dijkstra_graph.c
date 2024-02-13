@@ -1,170 +1,60 @@
 #include "pathfinding.h"
+#include <sys/types.h>
 
+static int *dists;
+static vertex_t **from;
+static vertex_t **verts;
 
-int initialize_dijkstra(graph_t *graph,
-vertex_t const *start, vertex_t const *target,
-
-						queue_t *queue, size_t **dist, size_t **prev, char **visited);
-
-void update_distances(graph_t *graph, vertex_t *vertex, queue_t *queue,
-					size_t *dist, size_t *prev);
-
-queue_t *path(graph_t *graph, vertex_t const *start, vertex_t const *target,
-
-			size_t const *prev, size_t const *dist);
-
+#define STRDUP(x) ((str = strdup(x)) ? str : (exit(1), NULL))
 
 /**
-* dijkstra_graph - Dijkstra's algorithm
-* @graph: graph
-* @start: start vertex
-* @target: target vertex
-* Return: queue of vertices
-*/
+ * dijkstra_graph - uses Dijkstra's Algo to find path
+ * @graph: pointer to graph struct
+ * @start: pointer to starting vertex
+ * @target: pointer to target vertex
+ * Return: path queue or NULL
+ */
 queue_t *dijkstra_graph(graph_t *graph, vertex_t const *start,
-
-						vertex_t const *target)
+	vertex_t const *target)
 {
-	queue_t *queue = queue_create();
-	size_t *dist = NULL, *prev = NULL;
-	char *visited = NULL;
-
-	vertex_t *vertex = (vertex_t *)dequeue(queue);
-
-	if (!graph || !start || !target || !queue)
-		return (NULL);
-
-	if (!initialize_dijkstra(graph, start, target, queue, &dist, &prev, &visited))
-		goto cleanup;
-
-	while (queue->front)
-	{
-
-		if (vertex == target)
-			break;
-		if (visited[vertex->index])
-			continue;
-		visited[vertex->index] = 1;
-		update_distances(graph, vertex, queue, dist, prev);
-	}
-
-	free(visited);
-	free(queue);
-	return (path(graph, start, target, prev, dist));
-
-cleanup:
-	free(visited);
-	free(dist);
-	free(prev);
-	while (queue->front)
-		free(dequeue(queue));
-	free(queue);
-	return (NULL);
-}
-
-/**
-* initialize_dijkstra - Initialize Dijkstra's algorithm
-* @graph: graph
-* @start: start vertex
-* @target: target vertex
-* @queue: queue
-* @dist: array of distances
-* @prev: array of previous vertices
-* @visited: array of visited vertices
-* Return: 1 on success, 0 on failure
-*/
-int initialize_dijkstra(graph_t *graph,
-vertex_t const *start, vertex_t const *target,
-
-						queue_t *queue, size_t **dist, size_t **prev, char **visited)
-{
-	size_t i;
-
-	*dist = malloc(graph->nb_vertices * sizeof(**dist));
-	*prev = malloc(graph->nb_vertices * sizeof(**prev));
-	*visited = calloc(graph->nb_vertices, sizeof(**visited));
-	if (!*dist || !*prev || !*visited)
-		return (0);
-
-	for (i = 0; i < graph->nb_vertices; ++i)
-	{
-		(*dist)[i] = (size_t)-1;
-		(*prev)[i] = (size_t)-1;
-	}
-	(*dist)[start->index] = 0;
-
-	if (!enqueue(queue, (void *)start))
-		return (0);
-
-	return (1);
-}
-
-/**
-* update_distances - Update distances for Dijkstra's algorithm
-* @graph: graph
-* @vertex: current vertex
-* @queue: queue
-* @dist: array of distances
-* @prev: array of previous vertices
-*/
-void update_distances(graph_t *graph, vertex_t *vertex, queue_t *queue,
-					size_t *dist, size_t *prev)
-{
-	edge_t *edge;
+	ssize_t i, d, j = -1;
 	vertex_t *v;
+	edge_t *e;
+	queue_t *path = queue_create();
+	char *str;
 
-	for (edge = vertex->edges; edge; edge = edge->next)
-	{
-		v = edge->dest;
-		if (dist[v->index] > dist[vertex->index] + edge->weight)
-		{
-			dist[v->index] = dist[vertex->index] + edge->weight;
-			prev[v->index] = vertex->index;
-			if (!enqueue(queue, (void *)v))
-				return;
-		}
-	}
-}
-
-/**
-* path - create a queue of vertices representing the path
-* @graph: graph
-* @start: start vertex
-* @target: target vertex
-* @prev: array of previous vertices
-* @dist: array of distances
-* Return: queue of vertices
-*/
-queue_t *path(graph_t *graph, vertex_t const *start, vertex_t const *target,
-
-			size_t const *prev, size_t const *dist)
-{
-	queue_t *queue = queue_create();
-	vertex_t *vertex;
-	size_t i;
-
-	if (!queue)
+	if (!graph || !start || !target || !path)
 		return (NULL);
-
-	for (i = target->index; i != (size_t)-1; i = prev[i])
+	dists = calloc(graph->nb_vertices, sizeof(*dists));
+	from = calloc(graph->nb_vertices, sizeof(*from));
+	verts = calloc(graph->nb_vertices, sizeof(*verts));
+	if (!dists || !from || !verts || !path)
+		return (NULL);
+	for (v = graph->vertices; v; v = v->next)
+		verts[v->index] = v, dists[v->index] = INT_MAX;
+	dists[start->index] = 0, from[start->index] = NULL;
+	while (j != (ssize_t)target->index)
 	{
-		vertex = graph->vertices;
-		while (vertex && vertex->index != i)
-			vertex = vertex->next;
-		if (!vertex)
-			goto cleanup;
-		if (!enqueue(queue, (void *)vertex))
-			goto cleanup;
+		for (d = INT_MAX, j = -1, i = 0; i < (ssize_t)graph->nb_vertices; i++)
+			if (dists[i] >= 0 && dists[i] < d)
+				d = dists[i], j = i;
+		if (j == -1)
+			break;
+		printf("Checking %s, distance from %s is %d\n",
+			verts[j]->content, start->content, dists[j]);
+		for (e = verts[j]->edges; e; e = e->next)
+			if (dists[e->dest->index] >= 0 &&
+				dists[j] + e->weight < dists[e->dest->index])
+				dists[e->dest->index] = dists[j] + e->weight,
+					from[e->dest->index] = verts[j];
+		dists[j] = -1;
 	}
-
-	if (peek(queue) != start)
-		goto cleanup;
-
-	return (queue);
-
-cleanup:
-	while (queue->front)
-		free(dequeue(queue));
-	free(queue);
-	return (NULL);
+	if (j != -1)
+		for (queue_push_front(path, STRDUP(verts[j]->content));
+			j != (ssize_t)start->index; j = from[j]->index)
+			queue_push_front(path, STRDUP(from[j]->content));
+	else
+		path = (free(path), NULL);
+	free(dists), free(from), free(verts);
+	return (path);
 }
