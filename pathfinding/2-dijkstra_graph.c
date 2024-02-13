@@ -6,6 +6,10 @@ vertex_t const *start, vertex_t const *target,
 
 						queue_t *queue, size_t **dist, size_t **prev, char **visited);
 
+void update_distances(graph_t *graph, vertex_t *vertex, queue_t *queue,
+					size_t *dist, size_t *prev);
+
+
 /**
 * dijkstra_graph - Dijkstra's algorithm
 * @graph: graph
@@ -20,6 +24,7 @@ queue_t *dijkstra_graph(graph_t *graph, vertex_t const *start,
 	queue_t *queue = queue_create();
 	size_t *dist = NULL, *prev = NULL;
 	char *visited = NULL;
+
 	vertex_t *vertex = (vertex_t *)dequeue(queue);
 
 	if (!graph || !start || !target || !queue)
